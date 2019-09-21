@@ -7,4 +7,6 @@
     <color name="servifyPurple">#4B10C1</color>
     <color name="servifyGreen">#4AD700</color>
     <color name="servifyLightGreen">#ACFF78</color>
+
+    <color name="semi_transparent">#66000000</color>
 </resources>
