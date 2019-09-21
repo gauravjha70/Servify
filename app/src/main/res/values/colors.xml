@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <!--<color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#D81B60</color>-->
+
+    <color name="colorPrimary">#ACFF78</color>
+    <color name="colorPrimaryDark">#4AD700</color>
+    <color name="colorAccent">#4B10C1</color>
 
     <color name="servifyPurple">#4B10C1</color>
     <color name="servifyGreen">#4AD700</color>
