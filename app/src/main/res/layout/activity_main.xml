@@ -32,31 +32,58 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
+    <com.smarteist.autoimageslider.SliderView
+        android:id="@+id/sv_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="330dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview"
+        app:sliderAnimationDuration="600"
+        app:sliderAutoCycleDirection="right"
+        app:sliderAutoCycleEnabled="true"
+        app:sliderIndicatorAnimationDuration="600"
+        app:sliderIndicatorGravity="center_horizontal|bottom"
+        app:sliderIndicatorMargin="0dp"
+        app:sliderIndicatorOrientation="horizontal"
+        app:sliderIndicatorPadding="4dp"
+        app:sliderIndicatorRadius="2dp"
+        app:sliderIndicatorSelectedColor="#2AA6DE"
+        app:sliderIndicatorUnselectedColor="#A9DBF1"
+        app:sliderScrollTimeInSec="3"
+        app:sliderStartAutoCycle="true" />
 
     <Button
         android:id="@+id/camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
         android:backgroundTint="@color/servifyGreen"
         android:drawableStart="@drawable/ic_camera"
         android:text="Camera"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/wifi_info"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview" />
+        app:layout_constraintTop_toBottomOf="@+id/sv_onboarding"
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/wifi_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/camera"
-        android:layout_margin="32dp"
+        android:layout_margin="16dp"
         android:backgroundTint="@color/servifyGreen"
         android:drawableStart="@drawable/ic_wifi"
         android:text="Wifi Info"
-        app:layout_constraintEnd_toEndOf="@+id/camera"
-        app:layout_constraintStart_toStartOf="@+id/camera"
-        app:layout_constraintTop_toBottomOf="@+id/camera" />
+        app:layout_constraintBottom_toBottomOf="@+id/camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/camera"
+        app:layout_constraintTop_toTopOf="@+id/camera" />
 
 
     <RelativeLayout
