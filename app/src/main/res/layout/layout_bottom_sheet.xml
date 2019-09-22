@@ -12,6 +12,14 @@
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_objects"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
     <LinearLayout
         android:id="@+id/gesture_layout"
         android:layout_width="match_parent"
@@ -74,7 +82,6 @@
             android:text="640*480"
             android:textColor="@android:color/black" />
     </LinearLayout>
-
 
 
     <LinearLayout

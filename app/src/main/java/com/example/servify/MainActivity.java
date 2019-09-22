@@ -1,11 +1,12 @@
 package com.example.servify;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.servify.ARModule.DetectorActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,20 +20,10 @@ public class MainActivity extends AppCompatActivity {
         camera = findViewById(R.id.camera);
         wifiInfo = findViewById(R.id.wifi_info);
 
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, CameraActivity.class));
-            }
-        });
+        camera.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, DetectorActivity.class)));
 
 
-        wifiInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, WifiInfoActivity.class));
-            }
-        });
+        wifiInfo.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, WifiInfoActivity.class)));
 
     }
 }
