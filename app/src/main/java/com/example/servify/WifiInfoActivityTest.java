@@ -64,13 +64,13 @@ public class WifiInfoActivityTest extends AppCompatActivity{
                 wifiManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(WifiInfoActivity.this, "Discovery Initiated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WifiInfoFragment.this, "Discovery Initiated", Toast.LENGTH_SHORT).show();
                         requestPeers();
                     }
 
                     @Override
                     public void onFailure(int i) {
-                        Toast.makeText(WifiInfoActivity.this, "Discovery Failed : " + i, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WifiInfoFragment.this, "Discovery Failed : " + i, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -153,13 +153,13 @@ public class WifiInfoActivityTest extends AppCompatActivity{
             public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
                 if (wifiP2pDeviceList.getDeviceList().size() == 0) {
                     System.out.println("No devices found");
-                    Toast.makeText(WifiInfoActivity.this, "Not Found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WifiInfoFragment.this, "Not Found", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else
                 {
                     System.out.println("Peers" + wifiP2pDeviceList.getDeviceList());
-                    Toast.makeText(WifiInfoActivity.this, "Found : " + wifiP2pDeviceList.getDeviceList().size(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WifiInfoFragment.this, "Found : " + wifiP2pDeviceList.getDeviceList().size(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

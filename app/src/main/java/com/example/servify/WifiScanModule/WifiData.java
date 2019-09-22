@@ -1,4 +1,4 @@
-package com.example.servify;
+package com.example.servify.WifiScanModule;
 
 public class WifiData {
 

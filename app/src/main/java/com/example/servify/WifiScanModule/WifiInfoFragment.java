@@ -1,15 +1,25 @@
-package com.example.servify;
+package com.example.servify.WifiScanModule;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.format.Formatter;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,16 +27,26 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.servify.ObjectModel;
+import com.example.servify.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-public class WifiInfoActivity extends AppCompatActivity{
+import java.util.List;
+
+
+public class WifiInfoFragment extends Fragment {
     private Button btnScan;
     ArrayList<WifiData> datalist;
     ArrayList<String> ipList;
+
+    ArrayList<ObjectModel> objectModels;
+
     String subnetIP;
     int defaultGateway;
     String mask;
@@ -35,13 +55,51 @@ public class WifiInfoActivity extends AppCompatActivity{
 
     SecurityManager securityManager;
 
+    RecyclerView deviceList;
+    ScanRecyclerAdapter adapter;
+
+    CardView loader;
+    TextView doneText;
+    ProgressBar progressBar;
+
+    FloatingActionButton addButton;
+
+    List<ObjectModel> result;
+
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wifi_info);
-        btnScan = findViewById(R.id.search);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.wifi_scanner,container,false);
+
+        deviceList = rootView.findViewById(R.id.recycler_view);
+        loader = rootView.findViewById(R.id.loader_card);
+        addButton = rootView.findViewById(R.id.add_button);
+        progressBar = rootView.findViewById(R.id.progress_bar);
+        doneText = rootView.findViewById(R.id.done);
+
+        objectModels = new ArrayList<ObjectModel>();
+        adapter = new ScanRecyclerAdapter(getContext(), objectModels);
+        deviceList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        deviceList.setAdapter(adapter);
+
+        startScan();
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                result = adapter.getSelected();
+            }
+        });
+
+        return rootView;
+    }
+
+    void startScan()
+    {
         WifiManager wifiManager;
-        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager = (WifiManager)getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         securityManager = new SecurityManager();
         securityManager = System.getSecurityManager();
@@ -59,14 +117,10 @@ public class WifiInfoActivity extends AppCompatActivity{
 
         System.out.println("New subnet : "+subnet);
 
-        ipList = new ArrayList();
-        btnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ScanIpTask().execute();
-            }
-        });
+        new ScanIpTask().execute();
     }
+
+
     private class ScanIpTask extends AsyncTask<Void, String, Void> {
 
 
@@ -74,23 +128,29 @@ public class WifiInfoActivity extends AppCompatActivity{
         static final int upper = 255;
         static final int timeout = 500;
 
+        String host;
+
 
         @Override
         protected void onPreExecute() {
-            ipList.clear();
+            objectModels = new ArrayList<ObjectModel>();
             datalist = new ArrayList<WifiData>();
-            Toast.makeText(getApplicationContext(), "Scan IP...", Toast.LENGTH_LONG).show();
+            doneText.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.VISIBLE);
+
         }
         @Override
         protected Void doInBackground(Void... params) {
+
+            objectModels = new ArrayList<ObjectModel>();
+
             for (int i = lower; i <= upper; i++) {
                 String host = subnet + i;
                 try {
                     InetAddress inetAddress = InetAddress.getByName(host);
-                    if (inetAddress.isReachable(1000)){
-                        System.out.println("InetAddress : " + inetAddress.toString());
-                        System.out.println("HostName : " + inetAddress.getCanonicalHostName());
-                        publishProgress(inetAddress.toString());
+                    if (inetAddress.isReachable(timeout)){
+                        publishProgress(inetAddress.toString(), inetAddress.getHostName().toString());
                     }
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
@@ -102,66 +162,80 @@ public class WifiInfoActivity extends AppCompatActivity{
         }
         @Override
         protected void onProgressUpdate(String... values) {
-            ipList.add(values[0]);
-            data=new WifiData();
+
             String[] ipList = values[0].split("/");
             String ip = ipList[1];
-            data.IpAddress=values[0];
 
+            host = values[1];
+
+            ObjectModel obj = new ObjectModel();
             String macAdd = getMacFromArpCache(values[0]);
-            /*if(macAdd!=null)
-            {*/
-                data.MacAddress=getMacFromArpCache(values[0]);
+
+            if(macAdd!=null)
+            {
                 System.out.println("IpAddress : " + ip);
                 System.out.println("MacAddress : " + getMacFromArpCache(values[0]));
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+
+                if(host.equals(ip))
+                {
+                    host = "Generic";
+                }
+
+                System.out.println("Host : " + host);
+
                 String url ="https://api.macvendors.com/"+getMacFromArpCache(values[0]);
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 // Display the first 500 characters of the response string.
-                                data.Vendor=response;
                                 System.out.println(response);
-                                try{
-                                    /*securityManager = System.getSecurityManager();
-                                    securityManager.checkConnect(ip,-1);*/
-                                    InetAddress addr = InetAddress.getByName("172.16.213.168");
-//                                    System.out.println("Inet Address : " + addr);
-                                    boolean reachable = addr.isReachable(2000);
-                                    String host;
-                                    if(reachable){
-                                        host = addr.getCanonicalHostName();
-                                    }
-                                    else
-                                    {
-                                        host = "*****";
-                                    }
+                                obj.setIpAddress(ip);
+                                obj.setHost(host);
+                                obj.setMacAddress(macAdd);
+                                obj.setVendor(response);
 
-                                    data.Host=host;
-                                    System.out.println("Host : " + host);
-                                }
-                                catch (Exception e){
-                                    System.out.println("Inet Error : " + e.getMessage());
-                                    data.Host="****";
-                                }
-                                datalist.add(data);
+                                objectModels.add(obj);
+
+                                System.out.println("Size : " + objectModels.size());
+
+                                adapter = new ScanRecyclerAdapter(getContext(),objectModels);
+                                deviceList.setAdapter(adapter);
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+
+                        obj.setIpAddress(ip);
+                        obj.setHost(host);
+                        obj.setMacAddress(macAdd);
+                        obj.setVendor("Generic");
+
+                        objectModels.add(obj);
+                        adapter = new ScanRecyclerAdapter(getContext(),objectModels);
+                        deviceList.setAdapter(adapter);
                     }
                 });
                 queue.add(stringRequest);
-                Toast.makeText(getApplicationContext(), values[0], Toast.LENGTH_LONG).show();
-/*
-            }*/
+                Toast.makeText(getContext(), values[0], Toast.LENGTH_LONG).show();
+            }
 
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_LONG).show();
+            doneText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loader.setVisibility(View.GONE);
+                }
+            }, 2000);
+
+
         }
     }
     public static String getMacFromArpCache(String ip) {

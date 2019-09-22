@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WifiInfoActivity" />
+        <activity android:name=".WifiScanModule.WifiInfoFragment" />
         <activity android:name=".DetectionActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ARModule.CameraActivity" />
