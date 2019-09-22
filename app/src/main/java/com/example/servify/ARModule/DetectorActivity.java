@@ -31,8 +31,13 @@ import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.servify.ARModule.customview.OverlayView;
 import com.example.servify.ARModule.customview.OverlayView.DrawCallback;
@@ -44,16 +49,14 @@ import com.example.servify.ARModule.tflite.TFLiteObjectDetectionAPIModel;
 import com.example.servify.ARModule.tracking.MultiBoxTracker;
 import com.example.servify.ObjectModel;
 import com.example.servify.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
- * objects.
- */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
 
@@ -90,8 +93,19 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     private BorderedText borderedText;
 
+    private ImageView deviceIV;
+    private TextView deviceTypeTV;
+    private EditText deviceNameET;
+    private Button addBtn, cancelBtn;
+    private ConstraintLayout container;
+
     private List<ObjectModel> objects = new ArrayList<>();
 
+
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
+
+    private ObjectModel device;
 
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -156,6 +170,19 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 });
 
         tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
+
+        deviceIV = findViewById(R.id.iv_device_image);
+        deviceNameET = findViewById(R.id.et_device_name);
+        deviceTypeTV = findViewById(R.id.tv_device_name);
+        addBtn = findViewById(R.id.btn_add);
+        cancelBtn = findViewById(R.id.btn_cancel);
+        container = findViewById(R.id.cl_detection_container);
+
+        cancelBtn.setOnClickListener(view -> hideDialog());
+
+        addBtn.setOnClickListener(view -> uploadDevice(device));
+
+        initFirebase();
     }
 
     @Override
@@ -223,12 +250,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                     || _name.equals("laptop") || _name.equals("mouse") || _name.equals("keyboard")
                                     || _name.equals("cell phone") || _name.equals("microwave") || _name.equals("oven")
                                     || _name.equals("toaster") || _name.equals("refrigerator"))) {
-                                canvas.drawRect(location, paint);
 
-                                cropToFrameTransform.mapRect(location);
-
-                                result.setLocation(location);
-                                mappedRecognitions.add(result);
 
                                 //=============================
                                 ObjectModel obj;
@@ -237,14 +259,20 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                         obj = new ObjectModel("laptop");
                                         if (!objects.contains(obj)) {
                                             objects.add(obj);
-                                            runOnUiThread(() -> laptop.setVisibility(View.VISIBLE));
+                                            runOnUiThread(() -> {
+                                                laptop.setVisibility(View.VISIBLE);
+                                                laptop.setOnClickListener(view -> showDialog(obj));
+                                            });
                                         }
                                         break;
                                     case "mouse":
                                         obj = new ObjectModel("mouse");
                                         if (!objects.contains(obj)) {
                                             objects.add(obj);
-                                            runOnUiThread(() -> mouse.setVisibility(View.VISIBLE));
+                                            runOnUiThread(() -> {
+                                                mouse.setVisibility(View.VISIBLE);
+                                                mouse.setOnClickListener(view -> showDialog(obj));
+                                            });
                                         }
                                         break;
                                     case "keyboard":
@@ -252,6 +280,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                         if (!objects.contains(obj)) {
                                             objects.add(obj);
                                             runOnUiThread(() -> keyboard.setVisibility(View.VISIBLE));
+                                            keyboard.setOnClickListener(view -> showDialog(obj));
                                         }
                                         break;
                                     case "cell phone":
@@ -259,6 +288,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                         if (!objects.contains(obj)) {
                                             objects.add(obj);
                                             runOnUiThread(() -> phone.setVisibility(View.VISIBLE));
+                                            phone.setOnClickListener(view -> showDialog(obj));
                                         }
                                         break;
                                 }
@@ -287,6 +317,49 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 });
                     }
                 });
+    }
+
+    private void showDialog(ObjectModel objectModel) {
+//        container.setVisibility(View.VISIBLE);
+        container.animate().alpha(1).setDuration(300);
+        deviceTypeTV.setText(objectModel.getType());
+
+        switch (objectModel.getType()) {
+            case "cell phone":
+                device = new ObjectModel("phone");
+                deviceIV.setImageResource(R.drawable.ic_cell_phone);
+                break;
+
+            case "laptop":
+                device = new ObjectModel("laptop");
+                deviceIV.setImageResource(R.drawable.ic_laptop2);
+                break;
+        }
+    }
+
+    private void hideDialog() {
+//        container.setVisibility(View.GONE);
+        container.animate().alpha(0).setDuration(300);
+    }
+
+    private void initFirebase() {
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference("devices");
+    }
+
+    private void uploadDevice(ObjectModel object) {
+        String devName = deviceNameET.getText().toString();
+
+        object.setName(devName);
+
+        mReference.push().setValue(object).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(DetectorActivity.this, "Device Successfully Added!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Some Error Occured!", Toast.LENGTH_SHORT).show();
+            }
+            hideDialog();
+        });
     }
 
     @Override
