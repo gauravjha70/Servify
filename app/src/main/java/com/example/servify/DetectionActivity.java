@@ -1,10 +1,10 @@
 package com.example.servify;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-public class CameraActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DetectionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
