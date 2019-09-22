@@ -12,12 +12,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.servify.ARModule.DetectorActivity;
-<<<<<<< HEAD
 import com.example.servify.WifiScanModule.WifiInfoFragment;
-=======
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderView;
->>>>>>> 2e296f20c27c8b47a2e2b3d67e6fe196132df68c
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         camera = findViewById(R.id.camera);
         wifiInfo = findViewById(R.id.wifi_info);
-<<<<<<< HEAD
         fragmentContainer = findViewById(R.id.fragment_container);
 
         camera.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, DetectorActivity.class)));
@@ -51,16 +47,12 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.add(R.id.fragment_container,wifiInfoFragment).commit();
             }
         });
-=======
         sliderView = findViewById(R.id.sv_onboarding);
         SliderAdapterOnboard adapter = new SliderAdapterOnboard(this);
         sliderView.setSliderAdapter(adapter);
         sliderView.setIndicatorAnimation(IndicatorAnimations.WORM);
 
-        camera.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, DetectorActivity.class)));
 
-        wifiInfo.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, WifiInfoActivity.class)));
->>>>>>> 2e296f20c27c8b47a2e2b3d67e6fe196132df68c
 
     }
 }
