@@ -42,8 +42,8 @@ public class ScanRecyclerAdapter extends RecyclerView.Adapter<ScanRecyclerAdapte
         ObjectModel dat = mData.get(position);
         holder.mac.setText(dat.getMacAddress());
         holder.ip.setText(dat.getIpAddress());
-        holder.host.setText(dat.getHost());
-        holder.ven.setText(dat.getVendor());
+        holder.host.setText(dat.getVendor());
+        holder.ven.setText(dat.getHost());
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override

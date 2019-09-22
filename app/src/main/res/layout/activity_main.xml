@@ -85,6 +85,19 @@
         app:layout_constraintStart_toEndOf="@+id/camera"
         app:layout_constraintTop_toTopOf="@+id/camera" />
 
+    <Button
+        android:id="@+id/uid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/camera"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/servifyGreen"
+        android:drawableStart="@drawable/ic_wifi"
+        android:text="Generate UID"
+        app:layout_constraintTop_toBottomOf="@+id/camera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <RelativeLayout
         android:id="@+id/fragment_container"

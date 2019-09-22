@@ -126,7 +126,7 @@ public class WifiInfoFragment extends Fragment {
 
         static final int lower = 150;
         static final int upper = 255;
-        static final int timeout = 500;
+        static final int timeout = 100;
 
         String host;
 
