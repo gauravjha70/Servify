@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "618682206425",
+    "firebase_url": "https://servify-ac713.firebaseio.com",
+    "project_id": "servify-ac713",
+    "storage_bucket": "servify-ac713.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618682206425:android:3ba7ae97c24e506a2396c8",
+        "android_client_info": {
+          "package_name": "com.example.servify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618682206425-4kmo654b1ffk3knpthr1r5h3i8ulcmbi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.servify",
+            "certificate_hash": "01f7f2a5e921f0c797bc6cdd17b8ea8dd91a135a"
+          }
+        },
+        {
+          "client_id": "618682206425-sv9ujkgr3bkh2g3nibp968lnuf0oe6ub.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.servify",
+            "certificate_hash": "49bc74fee01fd2a48aaad09632aa170fe7db8c87"
+          }
+        },
+        {
+          "client_id": "618682206425-12s3rsneuo6adhognbrcsohbruur4vjo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6_6JPiNHVMOGTwaTULVtOHJZWsK9xSyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618682206425-12s3rsneuo6adhognbrcsohbruur4vjo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
